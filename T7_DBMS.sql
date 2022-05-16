@@ -1,0 +1,606 @@
+CREATE DATABASE T7_PROJECT;
+USE T7_PROJECT;
+
+CREATE TABLE T7_CUSTOMER(
+	T7_Cust_Id INTEGER, 
+    T7_Cust_FName VARCHAR(10) NOT NULL, 
+    T7_Cust_LName VARCHAR(10) NOT NULL, 
+    T7_Cust_DOB DATE NOT NULL, 
+    T7_Cust_Gender VARCHAR(2) NOT NULL, 
+    T7_Cust_Address VARCHAR(20) NOT NULL, 
+    T7_Cust_MOB_Number DECIMAL(10, 0) NOT NULL, 
+    T7_Cust_Email VARCHAR(30) NULL, 
+    T7_Cust_PassportNumber VARCHAR(20) NULL, 
+    T7_Cust_Marital_Status VARCHAR(8) NULL,
+	T7_Cust_Adhar_Number DECIMAL(12, 0) NULL, 
+    PRIMARY KEY (T7_Cust_Id)
+); 
+
+CREATE TABLE T7_APPLICATION(
+    T7_Application_Id VARCHAR(20), 
+    T7_Cust_Id INTEGER NOT NULL, 
+    T7_Vehicle_Id VARCHAR(20) NULL,
+    T7_Application_Status CHAR NOT NULL, 
+    T7_Coverage VARCHAR(50),
+    PRIMARY KEY (T7_Application_Id),
+    FOREIGN KEY (T7_Cust_Id) REFERENCES T7_CUSTOMER(T7_Cust_Id) 
+);
+
+CREATE TABLE T7_QUOTE(
+	T7_Quote_Id VARCHAR(20),
+	T7_Application_Id VARCHAR(20) NOT NULL,
+	T7_Cust_Id INTEGER NOT NULL,
+	T7_Issue_Date DATE NOT NULL,
+	T7_Valid_From_Date DATE NOT NULL,
+	T7_Valid_Till_Date DATE NOT NULL,
+	T7_Description INTEGER NOT NULL,
+	T7_Product_Id VARCHAR(20) NULL,
+	T7_Coverage_Level VARCHAR(20) NOT NULL,
+	PRIMARY KEY(T7_Quote_Id),
+    FOREIGN KEY (T7_Cust_Id) REFERENCES T7_CUSTOMER(T7_Cust_Id),
+    FOREIGN KEY (T7_Application_Id) REFERENCES T7_APPLICATION(T7_Application_Id)
+);
+
+CREATE TABLE T7_INSURANCE_POLICY(
+	T7_Agreement_Id VARCHAR(20),
+	T7_Application_Id VARCHAR(20)  NOT NULL,
+	T7_Cust_Id INTEGER NOT NULL,
+	T7_Department_Name VARCHAR(20) NULL,
+	T7_Policy_Number VARCHAR(20) NULL,
+	T7_Start_Date DATE NOT NULL,
+	T7_Expiry_Date DATE NOT NULL,
+	PRIMARY KEY(T7_Agreement_Id),
+    FOREIGN KEY (T7_Cust_Id) REFERENCES T7_CUSTOMER(T7_Cust_Id),
+    FOREIGN KEY (T7_Application_Id) REFERENCES T7_APPLICATION(T7_Application_Id)
+);
+
+CREATE TABLE T7_PREMIUM_PAYMENT(
+	T7_Premium_Payment_Id VARCHAR(20), 
+    T7_Cust_Id INTEGER NOT NULL,
+	T7_Policy_Number VARCHAR(20) NOT NULL,
+    T7_Premium_Payment_Schedule DATE NOT NULL, 
+	T7_Premium_Payment_Amount INTEGER NULL, 
+	T7_Receipt_Id VARCHAR(20) NOT NULL,
+	PRIMARY KEY(T7_Premium_Payment_Id),
+    FOREIGN KEY (T7_Cust_Id) REFERENCES T7_CUSTOMER(T7_Cust_Id)
+);
+
+CREATE TABLE T7_VEHICLE(
+	T7_Vehicle_Id  INTEGER,
+	T7_Cust_Id INTEGER NOT NULL,
+	T7_Policy_Number VARCHAR(20) NOT NULL,
+	T7_Dependent_Nok_Id VARCHAR(20) NOT NULL,
+	T7_Vehicle_Registration_Number VARCHAR(20) NOT NULL,
+	T7_Vehicle_Value INTEGER NULL,
+	T7_Vehicle_Type VARCHAR(20) NOT NULL,
+	T7_Vehicle_Size VARCHAR(20) NULL,
+	T7_Vehicle_Number_Of_Seat INTEGER NULL,
+	T7_Vehicle_Manufacturer VARCHAR(20) NOT NULL,
+	T7_Vehicle_Engine_Number VARCHAR(20) NULL,
+	T7_Vehicle_Chases_Number INTEGER NULL,
+	T7_Vehicle_Number INTEGER NOT NULL,
+	T7_Vehicle_Model_Number VARCHAR(20) NOT NULL,
+	PRIMARY KEY (T7_Vehicle_Id),
+    FOREIGN KEY (T7_Cust_Id) REFERENCES T7_CUSTOMER(T7_Cust_Id)
+);
+
+CREATE TABLE T7_CLAIM(
+	T7_Claim_Id INTEGER,
+    T7_Vehicle_Id INTEGER NOT NULL,
+	T7_Cust_Id INTEGER NOT NULL,
+	T7_Agreement_Id VARCHAR(20) NOT NULL,
+	T7_Claim_Amount INTEGER NOT NULL,
+	T7_Incident_Id VARCHAR(20) NOT NULL,
+	T7_Damage_Type VARCHAR(50) NOT NULL,
+	T7_Date_Of_Claim DATE NOT NULL,
+	T7_Claim_Status VARCHAR(20) NOT NULL,
+    PRIMARY KEY(T7_Claim_Id),
+    FOREIGN KEY (T7_Cust_Id) REFERENCES T7_CUSTOMER(T7_Cust_Id),
+    FOREIGN KEY (T7_Vehicle_Id) REFERENCES T7_VEHICLE(T7_Vehicle_Id)
+);
+
+CREATE TABLE T7_CLAIM_SETTLEMENT(
+	T7_Claim_Settlement_Id INTEGER,
+	T7_Claim_Id INTEGER NOT NULL,
+    T7_Cust_Id INTEGER NOT NULL,
+    T7_Vehicle_Id INTEGER NOT NULL,
+	T7_Date_Settled DATE NULL,
+	T7_Amount_Paid INTEGER NOT NULL,
+	T7_Coverage_Id INTEGER NOT NULL,
+    PRIMARY KEY(T7_Claim_Settlement_Id),
+    FOREIGN KEY (T7_Cust_Id) REFERENCES T7_CUSTOMER(T7_Cust_Id),
+    FOREIGN KEY (T7_Claim_Id) REFERENCES T7_CLAIM(T7_Claim_Id)
+);
+
+CREATE TABLE T7_INSURANCE_COMPANY(
+	T7_Company_Name VARCHAR(30), 
+    T7_Company_Address VARCHAR(200) NULL, 
+	T7_Company_Contact_Number VARCHAR(10) NULL, 
+    T7_Company_Fax VARCHAR(20) NULL, 
+    T7_Company_Email VARCHAR(50) NULL, 
+	T7_Company_Website VARCHAR(50) NULL, 
+    T7_Company_Location VARCHAR(20) NULL, 
+	T7_Company_Department_Name VARCHAR(20) NULL, 
+    T7_Company_Office_Name VARCHAR(50) NULL,
+	PRIMARY KEY (T7_Company_Name)
+);
+
+CREATE TABLE T7_STAFF(
+	T7_Staff_Id VARCHAR(20), 
+	T7_Company_Name VARCHAR(30) NOT NULL,
+	T7_Staff_Fname VARCHAR(10) NOT NULL,
+	T7_Staff_LName VARCHAR(10) NOT NULL,
+	T7_Staff_Address VARCHAR(200) NOT NULL,
+	T7_Staff_Contact VARCHAR(11) NULL,
+	T7_Staff_Gender VARCHAR(2) NOT NULL,
+	T7_Staff_Marital_Status VARCHAR(10) NULL,
+	T7_Staff_Nationality VARCHAR(15) NULL,
+	T7_Staff_Qualification VARCHAR(20) NULL,
+	T7_Staff_Allowance INTEGER NULL ,
+	T7_Staff_Aadharcard_Number DECIMAL(12, 0) NULL,
+	PRIMARY KEY (T7_Staff_Id),
+    FOREIGN KEY (T7_Company_Name) REFERENCES T7_INSURANCE_COMPANY(T7_Company_Name)
+);
+
+CREATE TABLE T7_DEPARTMENT(
+	T7_Department_Name VARCHAR(20), 
+	T7_Company_Name VARCHAR(20) NOT NULL,
+	T7_Office VARCHAR(40) NULL,
+	T7_Contact_Information TEXT NOT NULL,
+	T7_Department_Staff VARCHAR(18) NULL,
+	T7_Department_Leader VARCHAR(18) NOT NULL,
+	PRIMARY KEY (T7_Department_Name),
+    FOREIGN KEY (T7_Company_Name) REFERENCES T7_INSURANCE_COMPANY(T7_Company_Name)
+);
+
+CREATE TABLE T7_OFFICE(
+	T7_Office_Name VARCHAR(40), 
+	T7_Department_Name VARCHAR(20) NOT NULL,
+	T7_Company_Name VARCHAR(30) NOT NULL,
+	T7_Office_Leader VARCHAR(20) NOT NULL,
+	T7_Contact_Information VARCHAR(20) NOT NULL,
+	T7_Address VARCHAR(200) NOT NULL,
+	T7_Admin_Cost INTEGER NOT NULL,
+	T7_Staff VARCHAR(20) NOT NULL,
+    PRIMARY KEY(T7_Office_Name),
+    FOREIGN KEY (T7_Company_Name) REFERENCES T7_INSURANCE_COMPANY(T7_Company_Name),
+    FOREIGN KEY (T7_Department_Name) REFERENCES T7_DEPARTMENT(T7_Department_Name)
+);
+
+CREATE TABLE T7_MEMBERSHIP(
+	T7_Membership_Id VARCHAR(20), 
+	T7_Cust_Id INTEGER NOT NULL,
+	T7_Membership_Type VARCHAR(18) NOT NULL,
+	T7_Organisation_Contact VARCHAR(20) NOT NULL,
+	PRIMARY KEY (T7_Membership_Id),
+    FOREIGN KEY (T7_Cust_Id) REFERENCES T7_CUSTOMER(T7_Cust_Id)
+);
+
+CREATE TABLE T7_VEHICLE_SERVICE(
+	T7_Vehicle_Service VARCHAR(30), 
+	T7_Vehicle_Id INTEGER NOT NULL,
+	T7_Cust_Id INTEGER NOT NULL,
+	T7_Department_Name VARCHAR(20) NULL,
+	T7_Vehicle_Service_Address VARCHAR(20) NOT NULL,
+	T7_Vehicle_Service_Contact VARCHAR(20) NOT NULL,
+	T7_Vehicle_Service_Incharge VARCHAR(20) NOT NULL,
+	T7_Vehicle_Service_Type VARCHAR(20) NOT NULL,
+    PRIMARY KEY(T7_Vehicle_Service),
+    FOREIGN KEY (T7_Cust_Id) REFERENCES T7_CUSTOMER(T7_Cust_Id),
+    FOREIGN KEY (T7_Vehicle_Id) REFERENCES T7_VEHICLE(T7_Vehicle_Id)
+);
+
+CREATE TABLE T7_COVERAGE(
+	T7_Coverage_Id VARCHAR(20), 
+	T7_Company_Name VARCHAR(30) NOT NULL,
+	T7_Coverage_Amount INTEGER NOT NULL,
+	T7_Coverage_Type VARCHAR(10) NOT NULL,
+	T7_Coverage_Level VARCHAR(15) NOT NULL,
+	T7_Product_Id VARCHAR(20) NOT NULL,
+	T7_Coverage_Description VARCHAR(100) NOT NULL,
+	T7_Coverage_Terms VARCHAR(50) NOT NULL,
+    PRIMARY KEY(T7_Coverage_Id),
+    FOREIGN KEY (T7_Company_Name) REFERENCES T7_INSURANCE_COMPANY(T7_Company_Name)
+);
+
+CREATE TABLE T7_INSURANCE_POLICY_COVERAGE(
+	T7_Agreement_Id VARCHAR(20),
+	T7_Coverage_Id VARCHAR(20) NOT NULL,
+	PRIMARY KEY (T7_Agreement_Id),
+    FOREIGN KEY (T7_Coverage_Id) REFERENCES T7_COVERAGE(T7_Coverage_Id)
+);
+
+CREATE TABLE T7_NOK(
+	T7_Nok_Id VARCHAR(20),
+    T7_Agreement_Id VARCHAR(20) NOT NULL,
+    T7_Application_Id VARCHAR(20) NOT NULL,
+    T7_Cust_Id INTEGER NOT NULL,
+    T7_Nok_Name VARCHAR(20) NULL, 
+    T7_Nok_Address VARCHAR(20) NULL, 
+	T7_Nok_Phone_Number DECIMAL(10, 0) NOT NULL, 
+    T7_Nok_Martial_Status VARCHAR(8) NULL,
+    T7_Nok_Gender VARCHAR(2) NULL,
+	PRIMARY KEY (T7_Nok_Id),
+    FOREIGN KEY (T7_Cust_Id) REFERENCES T7_CUSTOMER(T7_Cust_Id),
+    FOREIGN KEY (T7_Application_Id) REFERENCES T7_APPLICATION(T7_Application_Id),
+    FOREIGN KEY (T7_Agreement_Id) REFERENCES T7_INSURANCE_POLICY_COVERAGE(T7_Agreement_Id)
+);
+
+CREATE TABLE T7_POLICY_RENEWABLE(
+	T7_Policy_Renewable_Id VARCHAR(20), 
+	T7_Date_Of_Renewal DATE NOT NULL, 
+    T7_Type_Of_Renewal VARCHAR(15) NOT NULL,
+    T7_Agreement_Id VARCHAR(20) NOT NULL,
+	T7_Application_Id VARCHAR(20) NOT NULL, 
+    T7_Cust_Id INTEGER NOT NULL, 
+    PRIMARY KEY (T7_Policy_Renewable_Id),
+    FOREIGN KEY (T7_Cust_Id) REFERENCES T7_CUSTOMER(T7_Cust_Id),
+    FOREIGN KEY (T7_Application_Id) REFERENCES T7_APPLICATION(T7_Application_Id),
+	FOREIGN KEY (T7_Agreement_Id) REFERENCES T7_INSURANCE_POLICY_COVERAGE(T7_Agreement_Id)
+);
+
+CREATE TABLE T7_INCIDENT(
+	T7_Incident_Id VARCHAR(20), 
+    T7_Vehicle_Id INTEGER NOT NULL,
+    T7_Incident_Type VARCHAR(30) NULL, 
+    T7_Incident_Date DATE NOT NULL,
+	T7_Description VARCHAR(100) NULL, 
+    PRIMARY KEY (T7_Incident_Id),
+    FOREIGN KEY (T7_Vehicle_Id) REFERENCES T7_VEHICLE(T7_Vehicle_Id)
+);
+
+CREATE TABLE T7_INCIDENT_REPORT(
+	T7_Incident_Report_Id VARCHAR(20),
+	T7_Incident_Id VARCHAR(20) NOT NULL, 
+	T7_Cust_Id INTEGER NOT NULL,
+	T7_Incident_Inspector VARCHAR(20) NOT NULL, 
+	T7_Incident_Cost INTEGER NOT NULL,
+	T7_Incident_Type CHAR(10) NOT NULL,
+	T7_Incident_Report_Description VARCHAR(100) NOT NULL,
+	PRIMARY KEY(T7_Incident_Report_Id),
+    FOREIGN KEY (T7_Cust_Id) REFERENCES T7_CUSTOMER(T7_Cust_Id),
+    FOREIGN KEY (T7_Incident_Id) REFERENCES T7_INCIDENT(T7_Incident_Id)
+);
+
+CREATE TABLE T7_PRODUCT(
+	T7_Product_Number VARCHAR(20),
+	T7_Company_Name VARCHAR(30) NOT NULL,
+	T7_Product_Price INTEGER NULL,
+	T7_Product_Type VARCHAR(50) NULL,
+	PRIMARY KEY (T7_Product_Number),
+    FOREIGN KEY (T7_Company_Name) REFERENCES T7_INSURANCE_COMPANY(T7_Company_Name)
+);
+
+CREATE TABLE T7_RECEIPT(
+	T7_Receipt_Id VARCHAR(20),
+	T7_Premium_Payment_Id VARCHAR(20) NOT NULL,
+	T7_Cust_Id INTEGER NOT NULL,
+	T7_Cost INTEGER NOT NULL,
+	T7_Time DATE NOT NULL,
+	PRIMARY KEY (T7_Receipt_Id),
+    FOREIGN KEY (T7_Premium_Payment_Id) REFERENCES T7_PREMIUM_PAYMENT(T7_Premium_Payment_Id)
+);
+
+INSERT INTO T7_CUSTOMER VALUES (100, 'Om', 'Morendha', '2002-05-11', 'M', '102 Modoc Alley', 9099192929, 'om.morendha@gmail.com', 'CXBY2046', 'Single', 728089028912);
+INSERT INTO T7_CUSTOMER VALUES (180, 'Aryan', 'Patel', '2001-02-17', 'M', '314 Quilly Lane', 7961016050, 'aryan.patel@gmail.com', 'NQCQ3731', 'Married', 364555789632);
+INSERT INTO T7_CUSTOMER VALUES (260, 'Mohit', 'Saini', '1992-12-06', 'M', '303 Smith Road', 5828466926, 'mohit.saini@gmail.com', 'VIDM8895', 'Single', 603247214690);
+INSERT INTO T7_CUSTOMER VALUES (340, 'Jayant', 'Kumawat', '1996-01-13', 'M', '145 Ingram Road', 8947847366, 'jayant.kumawat@gmail.com', 'PVEQ8029', 'Married', 227506696956);
+INSERT INTO T7_CUSTOMER VALUES (420, 'Jaya', 'Prakash', '1989-05-02', 'M', '982 Brannon Street', 2873773753, 'jaya.prakash@gmail.com', 'KOAX1239', 'Single', 509169906227);
+INSERT INTO T7_CUSTOMER VALUES (500, 'Rishabh', 'Gautam', '1999-08-19', 'M', '263 Pick Street', 4017559124, 'rishabh.gautam@gmail.com', 'OKVW6925', 'Married', 655401850944);
+INSERT INTO T7_CUSTOMER VALUES (580, 'Himanshu', 'Shekhar', '1984-10-21', 'M', '753 Rogers Street', 7971718823, 'himanshu.shekhar@gmail.com', 'VAJW8832', 'Single', 889290224121);
+INSERT INTO T7_CUSTOMER VALUES (660, 'Chaitanya', 'Reddy', '1983-05-29', 'M', '112 Monroe Street', 8327182046, 'chaitanya1983@gmail.com', 'AMIE3241', 'Married', 753053145524);
+INSERT INTO T7_CUSTOMER VALUES (740, 'John', 'Smith', '1995-03-01', 'F', '602 Lighthouse Drive', 2047825582, 'john.smith@gmail.com', 'PCKA2197', 'Single', 631469447322);
+INSERT INTO T7_CUSTOMER VALUES (820, 'Joan', 'Smith', '1997-02-11', 'F', '701 Spadafore Drive', 4875243506, 'joan.smith@gmail.com', 'CJQM7842', 'Married', 590441142265);
+INSERT INTO T7_CUSTOMER VALUES (900, 'Pooja', 'Shah', '2000-02-29', 'F', '808 Ethels Lane', 5202069757, 'pooja.shah@gmail.com', 'CPLW2379', 'Married', 143406375182);
+INSERT INTO T7_CUSTOMER VALUES (980, 'Anushka', 'Patel', '2002-11-14', 'F', '408 Milford Street', 3280963102, 'anushka.patel@gmail.com', 'PUEH7235', 'Single', 175474023282);
+INSERT INTO T7_CUSTOMER VALUES (1060, 'Priyanka', 'Sharma', '1999-07-25', 'F', '901 Derek Drive', 6749005685, 'priyanka.sharma@gmail.com', 'PXLA7221', 'Married', 761550582014);
+INSERT INTO T7_CUSTOMER VALUES (1140, 'Neha', 'Chawla', '1998-04-04', 'F', '402 Cantebury Drive', 4883762154, 'neha.chawla@gmail.com', 'LCNW5516', 'Single', 392972069488);
+
+INSERT INTO T7_APPLICATION VALUES('A1', 100, 001, 'D', 'High');
+INSERT INTO T7_APPLICATION VALUES('A2', 100, 002, 'I', 'Medium');
+INSERT INTO T7_APPLICATION VALUES('A3', 180, 003, 'A', 'High');
+INSERT INTO T7_APPLICATION VALUES('A4', 340, 004, 'A', 'Low');
+INSERT INTO T7_APPLICATION VALUES('A5', 420, 005, 'A', 'Medium');
+INSERT INTO T7_APPLICATION VALUES('A6', 500, 006, 'I', 'High');
+INSERT INTO T7_APPLICATION VALUES('A7', 660, 007, 'D', 'High');
+INSERT INTO T7_APPLICATION VALUES('A8', 660, 008, 'A', 'Medium');
+INSERT INTO T7_APPLICATION VALUES('A9', 660, 009, 'A', 'High');
+INSERT INTO T7_APPLICATION VALUES('A10', 740, 010, 'A', 'Low');
+INSERT INTO T7_APPLICATION VALUES('A11', 820, 011, 'I', 'High');
+INSERT INTO T7_APPLICATION VALUES('A12', 900, 012, 'A', 'Medium');
+INSERT INTO T7_APPLICATION VALUES('A13', 980, 013, 'A', 'High');
+INSERT INTO T7_APPLICATION VALUES('A14', 1060, 014, 'D', 'Low');
+
+INSERT INTO T7_QUOTE VALUES ('Q1', 'A1', 100, '2020-03-11', '2020-04-11', '2022-04-11', 4463, 'PR1', 'High');
+INSERT INTO T7_QUOTE VALUES ('Q2', 'A2', 100, '2020-12-17', '2020-12-19', '2021-12-19', 9121, 'PR2', 'Medium');
+INSERT INTO T7_QUOTE VALUES ('Q3', 'A3', 180, '2019-01-06', '2019-02-06', '2021-02-06', 1498, 'PR3', 'High');
+INSERT INTO T7_QUOTE VALUES ('Q4', 'A4', 340, '2018-07-13', '2018-09-13', '2020-09-13', 8601, 'PR4', 'Low');
+INSERT INTO T7_QUOTE VALUES ('Q5', 'A5', 420, '2019-09-02', '2019-09-02', '2022-09-02', 9172, 'PR5', 'Medium');
+INSERT INTO T7_QUOTE VALUES ('Q6', 'A6', 500, '2019-02-19', '2019-05-19', '2020-05-19', 4321, 'PR6', 'High');
+INSERT INTO T7_QUOTE VALUES ('Q7', 'A7', 660, '2017-09-21', '2017-09-21', '2021-09-21', 7591, 'PR7', 'High');
+INSERT INTO T7_QUOTE VALUES ('Q8', 'A8', 660, '2021-05-29', '2021-08-29', '2023-08-29', 2351, 'PR8', 'Medium');
+INSERT INTO T7_QUOTE VALUES ('Q9', 'A9', 660, '2022-11-01', '2022-11-01', '2023-11-01', 6725, 'PR9', 'High');
+INSERT INTO T7_QUOTE VALUES ('Q10', 'A10', 740,'2022-01-11', '2022-02-11', '2022-02-11', 9823, 'PR10', 'Low');
+INSERT INTO T7_QUOTE VALUES ('Q11', 'A11', 820, '2021-12-29', '2021-01-29', '2022-01-29', 1002, 'PR11', 'High');
+INSERT INTO T7_QUOTE VALUES ('Q12', 'A12', 900, '2020-01-14', '2020-01-14', '2022-01-14', 1200, 'PR12', 'Medium');
+INSERT INTO T7_QUOTE VALUES ('Q13', 'A13', 980, '2018-02-25', '2018-02-25', '2019-02-25', 4921, 'PR13', 'High');
+INSERT INTO T7_QUOTE VALUES ('Q14', 'A14', 1060, '2017-03-04', '2017-05-04', '2019-05-04', 6724, 'PR14', 'Low');
+
+INSERT INTO T7_INSURANCE_POLICY VALUES ('AG1' , 'A1', 100 , 'BJA_Marketing', 'P1', '2020-04-11', '2022-04-11');
+INSERT INTO T7_INSURANCE_POLICY VALUES ('AG2' , 'A2', 180 , 'BJA_Accounting', 'P2', '2020-12-19', '2021-12-19');
+INSERT INTO T7_INSURANCE_POLICY VALUES ('AG3' , 'A3', 180 , 'BJA_Finance', 'P3', '2019-02-06', '2021-02-06');
+INSERT INTO T7_INSURANCE_POLICY VALUES ('AG4' , 'A4', 340 , 'UNI_Marketing', 'P4', '2018-09-13', '2020-09-13');
+INSERT INTO T7_INSURANCE_POLICY VALUES ('AG5' , 'A5', 420 , 'UNI_Production', 'P5', '2019-09-02', '2022-09-02');
+INSERT INTO T7_INSURANCE_POLICY VALUES ('AG6' , 'A6', 500 , 'UNI_Accounting', 'P6', '2019-05-19', '2020-05-19');
+INSERT INTO T7_INSURANCE_POLICY VALUES ('AG7' , 'A7', 660 , 'UNI_Finance', 'P7', '2017-09-21', '2021-09-21');
+INSERT INTO T7_INSURANCE_POLICY VALUES ('AG8' , 'A8', 660 , 'HE_Finance', 'P8', '2021-08-29', '2023-08-29');
+INSERT INTO T7_INSURANCE_POLICY VALUES ('AG9' , 'A9', 660 , 'HE_Accounter', 'P9', '2022-11-01', '2023-11-01');
+INSERT INTO T7_INSURANCE_POLICY VALUES ('AG10', 'A10', 740, 'HE_Accounting', 'P10', '2022-02-11', '2022-02-11');
+INSERT INTO T7_INSURANCE_POLICY VALUES ('AG11', 'A11', 820, 'BA_Purchase', 'P11', '2021-01-29', '2022-01-29');
+INSERT INTO T7_INSURANCE_POLICY VALUES ('AG12', 'A12', 900, 'BA_Purchase', 'P12', '2020-01-14', '2022-01-14');
+INSERT INTO T7_INSURANCE_POLICY VALUES ('AG13', 'A13', 980, 'BA_Business', 'P13', '2018-02-25', '2019-02-25');
+INSERT INTO T7_INSURANCE_POLICY VALUES ('AG14', 'A14', 1060, 'BA_Marketing', 'P14', '2017-05-04', '2019-05-04');
+
+INSERT INTO T7_PREMIUM_PAYMENT VALUES('P1001', 100, 'P1', '2020-03-11', 7000, 'R001');
+INSERT INTO T7_PREMIUM_PAYMENT VALUES('P1002', 100, 'P2', '2020-12-19', NULL, 'R002');
+INSERT INTO T7_PREMIUM_PAYMENT VALUES('P1003', 180, 'P3', '2019-01-08', 8300, 'R003');
+INSERT INTO T7_PREMIUM_PAYMENT VALUES('P1004', 340, 'P4', '2018-07-13', 8000, 'R004');
+INSERT INTO T7_PREMIUM_PAYMENT VALUES('P1005', 420, 'P5', '2019-09-05', NULL, 'R005');
+INSERT INTO T7_PREMIUM_PAYMENT VALUES('P1006', 500, 'P6', '2019-02-21', 7500, 'R006');
+INSERT INTO T7_PREMIUM_PAYMENT VALUES('P1007', 660, 'P7', '2020-03-11', NULL, 'R007');
+INSERT INTO T7_PREMIUM_PAYMENT VALUES('P1008', 660, 'P8', '2017-02-21', 7800, 'R008');
+INSERT INTO T7_PREMIUM_PAYMENT VALUES('P1009', 660, 'P9', '2022-11-01', 9600, 'R009');
+INSERT INTO T7_PREMIUM_PAYMENT VALUES('P1010', 740, 'P10', '2022-01-16', 8000, 'R0010');
+INSERT INTO T7_PREMIUM_PAYMENT VALUES('P1011', 820, 'P11', '2021-12-31', NULL, 'R0011');
+INSERT INTO T7_PREMIUM_PAYMENT VALUES('P1012', 900, 'P12', '2020-01-14', 9600, 'R0012');
+INSERT INTO T7_PREMIUM_PAYMENT VALUES('P1013', 980, 'P13', '2018-02-25', 7050, 'R0013');
+INSERT INTO T7_PREMIUM_PAYMENT VALUES('P1014', 1060, 'P14', '2017-03-04', 10000, 'R0014');
+
+INSERT INTO T7_VEHICLE VALUES(001, 100, 'P1', 'ND1001', 'VR1001', 1305000, 'Four Wheeler', '15.2msq', 4,'TATA', 51368464641, 7654, 1000, 'Harrier');
+INSERT INTO T7_VEHICLE VALUES(002, 100, 'P2', 'ND1002', 'VR1002', 605000, 'Four Wheeler', '7.2msq',4, 'TATA', 51648464641, 5454, 2000, 'Nexon');
+INSERT INTO T7_VEHICLE VALUES(003, 180, 'P3', 'ND1003', 'VR1003', 130000, 'Two Wheeler', '3m', 2,'Bajaj', 514654464641, 7554, 3000, 'Discover');
+INSERT INTO T7_VEHICLE VALUES(004, 340, 'P4', 'ND1004', 'VR1004', 805000, 'Four Wheeler', '16.2msq', 5, 'Maruti Suzuki', 47168464641, 9554, 4000, 'Baleno');
+INSERT INTO T7_VEHICLE VALUES(005, 420, 'P5', 'ND1005', 'VR1005', 1005000, 'Four Wheeler', '14.5msq', 5,'Toyota', 74868464641, 8924, 5000, 'Fourtuner');
+INSERT INTO T7_VEHICLE VALUES(006, 500, 'P6', 'ND1006', 'VR1006', 105000, 'Two Wheeler', '2.2m',2, 'Hero', 68478464641, 9578, 6000, 'Splender PLus');
+INSERT INTO T7_VEHICLE VALUES(007, 660, 'P7', 'ND1007', 'VR1007', 705000, 'Four Wheeler', '13.7msq',6, 'Maruti Suzuki', 48968464641, 8954, 7000, 'Baleno');
+INSERT INTO T7_VEHICLE VALUES(008, 660, 'P8', 'ND1008', 'VR1008', 905000, 'Four Wheeler', '12.42msq',4, 'Mahindra', 213646264641, 4862, 8000, 'Scarpio');
+INSERT INTO T7_VEHICLE VALUES(009, 660, 'P9', 'ND1009', 'VR1009', 130000, 'Two Wheeler', '12.2m',2, 'Honda', 98678464641, 4414, 9000, 'Shine');
+INSERT INTO T7_VEHICLE VALUES(010, 740, 'P10', 'ND10010', 'VR10010', 505000, 'Four Wheeler', '9.5msq',4, 'Maruti Suzuki', 90918464641, 5871, 10000, 'Alto');
+INSERT INTO T7_VEHICLE VALUES(011, 820, 'P11', 'ND10011', 'VR10011', 105000, 'Two Wheeler', '3.2m',2, 'Hero', 61348464640, 7014, 11000, 'Splender Pro');
+INSERT INTO T7_VEHICLE VALUES(012, 900, 'P12', 'ND10012', 'VR10012', 1005000, 'Four Wheeler', '13.2msq', 4,'TATA', 97128464641, 1154, 12000, 'Safari');
+INSERT INTO T7_VEHICLE VALUES(013, 980, 'P13', 'ND10013', 'VR10013', 905000, 'Four Wheeler', '10.2msq', 4,'Mahindra', 70368464641, 3354, 13000, 'XUV300');
+INSERT INTO T7_VEHICLE VALUES(014, 1060, 'P14', 'ND10014', 'VR10014', 105000, 'Four Wheeler', '11.2msq', 4,'TATA', 11468464641, 3924, 14000, 'Safari');
+
+INSERT INTO T7_CLAIM VALUES(000101, 001, 100, 'AG1', 2500, 'I101', 'HeadLight Damage', '2021-05-05', 'SUCCESS');
+INSERT INTO T7_CLAIM VALUES(000102, 002, 100, 'AG2', 2500, 'I102', 'Side Mirror Damage', '2020-05-15', 'Pending');
+INSERT INTO T7_CLAIM VALUES(000103, 003, 180, 'AG3', 1300, 'I103', 'Engine Damage', '2021-04-12', 'SUCCESS');
+INSERT INTO T7_CLAIM VALUES(000104, 004, 340, 'AG4', 2000, 'I104', 'Front Mirror Damage', '2019-03-19', 'Pending');
+INSERT INTO T7_CLAIM VALUES(000105, 005, 420, 'AG5', 1000, 'I105', 'Driver Side Window Damage', '2019-11-20', 'SUCCESS');
+INSERT INTO T7_CLAIM VALUES(000106, 006, 500, 'AG6', 7000, 'I106', 'Bumper Damage', '2020-12-12', 'SUCCESS');
+INSERT INTO T7_CLAIM VALUES(000107, 007, 660, 'AG7', 10500, 'I107', 'Side Mirror', '2021-02-06', 'Pending');
+INSERT INTO T7_CLAIM VALUES(000108, 008, 660, 'AG8', 1900, 'I108', 'Gear Box Not Working', '2020-08-13', 'Pending');
+INSERT INTO T7_CLAIM VALUES(000109, 009, 660, 'AG9', 3500, 'I109', 'HeadLight Damage', '2021-03-31', 'SUCCESS');
+INSERT INTO T7_CLAIM VALUES(000110, 010, 740, 'AG10', 4500, 'I110', 'Wiser are broken', '2021-08-28', 'SUCCESS');
+INSERT INTO T7_CLAIM VALUES(000111, 011, 820, 'AG11', 5000, 'I111', 'Car Body Are Burnt Damage', '2021-06-30', 'SUCCESS');
+INSERT INTO T7_CLAIM VALUES(000112, 012, 900, 'AG12', 5000, 'I112', 'Windshield is Damage', '2021-08-08', 'Pending');
+INSERT INTO T7_CLAIM VALUES(000113, 013, 980, 'AG13', 10000, 'I113', 'HeadLight Damage', '2021-05-16', 'SUCCESS');
+INSERT INTO T7_CLAIM VALUES(000114, 014, 1060, 'AG14', 8000, 'I114', 'HeadLight Damage', '2021-11-25', 'SUCCESS');
+
+INSERT INTO T7_CLAIM_SETTLEMENT VALUES(200, 000101, 100, 001, '2021-05-12', 2005, 00301);
+INSERT INTO T7_CLAIM_SETTLEMENT VALUES(201, 000102, 100, 001, NULL, 0, 00302);
+INSERT INTO T7_CLAIM_SETTLEMENT VALUES(202, 000103, 180, 002, '2021-01-10', 109, 00303);
+INSERT INTO T7_CLAIM_SETTLEMENT VALUES(203, 000104, 340, 003, NULL, 0, 00303);
+INSERT INTO T7_CLAIM_SETTLEMENT VALUES(204, 000105, 420, 004, '2021-02-09', 720, 00305);
+INSERT INTO T7_CLAIM_SETTLEMENT VALUES(205, 000106, 500, 005, '2021-01-01', 5000, 00306);
+INSERT INTO T7_CLAIM_SETTLEMENT VALUES(206, 000107, 580, 005, '2021-03-20', 10010, 00307);
+INSERT INTO T7_CLAIM_SETTLEMENT VALUES(207, 000108, 660, 005, NULL, 0, 00308);
+INSERT INTO T7_CLAIM_SETTLEMENT VALUES(208, 000109, 660, 006, '2021-09-01', 2200, 00309);
+INSERT INTO T7_CLAIM_SETTLEMENT VALUES(209, 000110, 660, 007, '2021-07-17', 3200, 00310);
+INSERT INTO T7_CLAIM_SETTLEMENT VALUES(210, 000111, 740, 007, '2021-10-20', 4400, 00311);
+INSERT INTO T7_CLAIM_SETTLEMENT VALUES(211, 000112, 820, 008, NULL, 0, 00312);
+INSERT INTO T7_CLAIM_SETTLEMENT VALUES(212, 000113, 900, 009, '2021-06-30', 7800, 00313);
+INSERT INTO T7_CLAIM_SETTLEMENT VALUES(213, 000114, 980, 009, '2021-08-13', 8000, 00314);
+
+INSERT INTO T7_INSURANCE_COMPANY VALUES('Bajaj Allianz', '705 Bengaluru Karnataka', '7895642321', '180045686', 'bajajallianz@gmail.com', 'bajajallianz.com', 'Delhi', 'Finance', 'Bajaj_Allianz_Enclave');
+INSERT INTO T7_INSURANCE_COMPANY VALUES('United India', '80 Delhi New Delhi', '6201005895', '180054631', 'unitedindia@gmail.com', 'unitedindia.com', 'Mumbai', 'Account', 'United_Building_Indrapuram');
+INSERT INTO T7_INSURANCE_COMPANY VALUES('IFFCO Tokio', '78 Gandhinagar Gujarat', '6542312354', '18002535', 'iffcotokio@gmail.com', 'iffcoindia.com', 'Gujarat', 'Claim_Department', 'GandhiKunj');
+INSERT INTO T7_INSURANCE_COMPANY VALUES('National Insurance', '52 Patna Bihar', '8009878526', '12002562', 'nationalinsurance@gmail.com', 'nationalinsurance.com', 'Bihar', 'Finance', 'Company_Office');
+INSERT INTO T7_INSURANCE_COMPANY VALUES('SBI', '789 Greater Noida Uttar Pradesh', '6201100458', '180085456', 'sbi001@gmail.com', 'sbiindia.com', 'Udaipur', 'Finance', 'Sbi_Enclave');
+INSERT INTO T7_INSURANCE_COMPANY VALUES('Royal Sundaram', '150 Hubli Karantaka', '8298874205', '18005897', 'royalsundaram123@gmail.com', 'royalsundaram.com', 'Dharwad', 'Claim', 'Royal_Sundram_Building');
+INSERT INTO T7_INSURANCE_COMPANY VALUES('Future Generali', '500 Ahmedabad Gujarat', '7488388501', '18002567', 'futuregenerali@gmail.com', 'futuregenerali.in', 'Ahmedabad', 'Accounts', 'House_4th_Floor');
+INSERT INTO T7_INSURANCE_COMPANY VALUES('Shriram', '85 Old Delhi','789456122', '18007892', 'shriram123@gmail.com', 'shriram.in','Delhi', 'Data_Department', 'Shriram_Insurance_Enclave_2nd_Floor');
+INSERT INTO T7_INSURANCE_COMPANY VALUES('Oriental', '78 Dalal Street Maharasthra', '852741962', '147889125', 'oriental345@yahoo.com', 'orientalinsurance.in', 'Hooghly', 'Claim','Powerhouse_Building');
+INSERT INTO T7_INSURANCE_COMPANY VALUES('Liberty Motor Insurance', '1256 Shantinagar Madhya Pradesh', '564897225','12549765', 'libertymotor345@gmail.com', 'libertymotor.in', 'Indore', 'Accounts', 'Emperial_Office');
+INSERT INTO T7_INSURANCE_COMPANY VALUES('Bharti AXA', '456 Dharwad Karantaka', '8794562545', '1548972', 'bhartiaxa@yahoo.com', 'bhartiaxa.com', 'Dharwad', 'Finance', 'Bharti_Office');
+INSERT INTO T7_INSURANCE_COMPANY VALUES('New India', '487 Ranchi Jharkhand', '6200108978', '180045689', 'newindia154@gmail.com', 'newindia.in', 'Jharkhand', 'Claim', 'Main_Office');
+INSERT INTO T7_INSURANCE_COMPANY VALUES('Magma HDI', '452 Panji Goa', '7542617892', '158214625', 'magmahdi@gmail.com', 'magmahdi.com', 'Goa', 'Accounts', 'Goan_Office');
+INSERT INTO T7_INSURANCE_COMPANY VALUES('Chola MS', '456 Tamil Nadu', '6200105848', '180052862', 'cholams@gmail.com', 'cholams.com', 'Tamil_Nadu','Claim_Department', 'Head_Office');
+
+INSERT INTO T7_STAFF VALUES('SF001', 'Bajaj allianz', 'Ravi', 'Gupta', '24, 2 Nd Flr, Yamuna Building, Opp Police Station', 9122345768, 'M', 'MARRIED', 'INDIAN', 'BTECH', 2000, 419200203567);
+INSERT INTO T7_STAFF VALUES('SF002', 'United India', 'Ishaan', 'Sharma', 'Opp Sant Jews, Jarimari Road, Andheri ', 9122345768, 'M', 'UMARRIED', 'INDIAN', 'DIPLOMA', 8000, 110200203567);
+INSERT INTO T7_STAFF VALUES('SF003', 'Magma HDI', 'Rupesh', 'Agrawal', 'K 3, Shopping Complex Som Vihar Apartment', 9122345768, 'M', 'MARRIED', 'INDIAN', 'BTECH', 9000, 310200205568);
+INSERT INTO T7_STAFF VALUES('SF004', 'IFFCO Tokio', 'Kaushal', 'Agrawal', '22-7-238/a, Chatta Bazar', 9122345768, 'M', 'UMARRIED', 'INDIAN', 'BTECH', 5500, 220200203567);
+INSERT INTO T7_STAFF VALUES('SF005', 'National Insurance', 'Nimish', 'Kapoor', ' J-30, White House, Nr Ram Jas Schoolno 2', 9122345768, 'M', 'UMARRIED', 'INDIAN', 'BTECH', 10000,110200273569);
+INSERT INTO T7_STAFF VALUES('SF006', 'SBI', 'Sarva', 'Mitra', '572/573, Petblr-53, Chickpet', 9122345768, 'M', 'MARRIED', 'INDIAN', 'BSc', 9600, 110200207067);
+INSERT INTO T7_STAFF VALUES('SF007', 'Royal Sundaram', 'Lokesh', 'Singh', '506, 5th Floor, Faize Quibi, 375 Narshi Natha St',9122345768, 'M', 'MARRIED', 'INDIAN', 'BTECH', 2000,400200203567);
+INSERT INTO T7_STAFF VALUES('SF008', 'Future Generali', 'Namitha', 'Reddy', '40, Nagdevi Cross Lane, Nagdevi', 9122345768, 'F', 'UMARRIED', 'INDIAN', 'MTECH', 3000, 800200203567);
+INSERT INTO T7_STAFF VALUES('SF009', 'Shriram', 'Kiran', 'Arya', '127/b, Mittal Towers, Nariman Point', 9122345768, 'F', 'MARRIED', 'INDIAN', 'MTECH', 3900, 111100203567);
+INSERT INTO T7_STAFF VALUES('SF010', 'Oriental', 'Kareem', 'Khan', ' 75, Ground Kp Main Rd, Yediyou, Jayanagar', 9122345768, 'M', 'MARRIED', 'INDIAN', 'BTECH', 4600, 492000203567);
+INSERT INTO T7_STAFF VALUES('SF011', 'Liberty Motor Insurance', 'Sheena', 'Malik', ' Z-18, Distric Centre, Transport Authority, Janak Puri', 9122345768, 'F', 'MARRIED', 'INDIAN', 'DIPLOMA', 2800, 556700203567);
+INSERT INTO T7_STAFF VALUES('SF012', 'Bharti AXA', 'Divyansh', 'Mehta', '78, Site 1 Indl Area, B S Road', 9122345768, 'M', 'UMARRIED', 'INDIAN', 'DIPLOMA', 3700, 882200203567);
+INSERT INTO T7_STAFF VALUES('SF013', 'New India', 'Aniket', 'Pandey', '77, Elephant Rock Road, Jayanagar', 9122345768, 'M', 'MARRIED', 'INDIAN', 'BTECH', 5000, 110200278007);
+
+INSERT INTO T7_DEPARTMENT VALUES('BJA_Marketing', 'Bajaj Allianz', '121/1, Nahar Seth Indl Estate', 'bajaj_all@gmail.com', 'Ravi Gupta', 'Rani Melwani');
+INSERT INTO T7_DEPARTMENT VALUES('BJA_Accounting', 'Bajaj Allianz', '121/1, Nahar Seth Indl Estate', 'bajaj_all@gmail.com', 'Raju Sharma', 'Sanjay Singh');
+INSERT INTO T7_DEPARTMENT VALUES('BJA_Finance', 'Bajaj Allianz', '121/1, Nahar Seth Indl Estate', 'bajaj_all@gmail.com', 'Md. Kasim', 'Yuvraj Kuswaha');
+INSERT INTO T7_DEPARTMENT VALUES('UNI_Marketing', 'United India', 'Parag Indl Estate, Pokhran Road No 1', 'united@uni.ac.in', 'Srinesh Kumar', 'Nirmal Singh');
+INSERT INTO T7_DEPARTMENT VALUES('UNI_Sales', 'United India', 'Parag Indl Estate, Pokhran Road No 1', 'united@uni.ac.in', 'Ishaan Sharma', 'Siddhant Maurya');
+INSERT INTO T7_DEPARTMENT VALUES('UNI_Production', 'United India', 'Parag Indl Estate, Pokhran Road No 1', 'united@uni.ac.in', 'Rohit Vargiya', 'Meenakshi Arya');
+INSERT INTO T7_DEPARTMENT VALUES('UNI_Resource', 'United India', 'Parag Indl Estate, Pokhran Road No 1', 'united@uni.ac.in', 'Karina Sen', 'Vishnu Suraj');
+INSERT INTO T7_DEPARTMENT VALUES('NI_Marketing', 'National Insurance', '12/13, Tns Lane, Avenue Road', 'national_in@hotmail.com', 'Nimish Kapoor', 'Manisha Verma');
+INSERT INTO T7_DEPARTMENT VALUES('NI_Sales', 'National Insurance', '12/13, Tns Lane, Avenue Road', 'national_in@hotmail.com', 'Sakal Kumar', 'Richa Singh');
+INSERT INTO T7_DEPARTMENT VALUES('NI_Accounting', 'National Insurance', '12/13, Tns Lane, Avenue Road', 'national_in@hotmail.com',  'Prem Kumar','Ramesh Vishwakarma');
+INSERT INTO T7_DEPARTMENT VALUES('BA_Marketing', 'Bharti AXA', '2nd Floor Sambava Chembers, Sir P M Road', 'baxa@gmail.com', 'Divyansh Mehta', 'Arjun Reddy');
+INSERT INTO T7_DEPARTMENT VALUES('BA_Business', 'Bharti AXA', '2nd Floor Sambava Chembers, Sir P M Road', 'baxa@gmail.com', 'Aakash Shinde', 'Jhon Constantine');
+INSERT INTO T7_DEPARTMENT VALUES('BA_Purchase', 'Bharti AXA', '2nd Floor Sambava Chembers, Sir P M Road', 'baxa@gmail.com', 'Syeraa Narshima','Prakruti Sharma');
+
+INSERT INTO T7_OFFICE VALUES('O1', 'BJA_Marketing', 'Bajaj Allianz', 'Ram', '987654321', 'Bengaluru', 1000, 'Finance');
+INSERT INTO T7_OFFICE VALUES('O2', 'BJA_Accounting', 'Bajaj Allianz', 'Shubham', '987654322', 'Bharuch', 2000, 'Accounts');
+INSERT INTO T7_OFFICE VALUES('O3', 'BJA_Finance', 'Bajaj Allianz', 'Lokesh', '987654323', 'Bengaluru', 3000, 'Claim');
+INSERT INTO T7_OFFICE VALUES('O4', 'UNI_Marketing', 'United India', 'Jhanvi','987654324', 'Patna', 4000, 'Finance');
+INSERT INTO T7_OFFICE VALUES('O5', 'UNI_Sales', 'United India', 'Tanvi', '987654325', 'Patna', 5000, 'Finance');
+INSERT INTO T7_OFFICE VALUES('O6', 'UNI_Production', 'United India', 'Siddarth', '987654326', 'Patna', 6000, 'Claim');
+INSERT INTO T7_OFFICE VALUES('O7', 'UNI_Resource', 'United India', 'Akshat', '987654327', 'Patna', 7000, 'Admin');
+INSERT INTO T7_OFFICE VALUES('O8', 'NI_Marketing', 'National Insurance', 'Nishant', '987654328', 'Delhi', 8000, 'Admin');
+INSERT INTO T7_OFFICE VALUES('O9', 'NI_Sales', 'National Insurance', 'Amit', '987654329', 'Delhi', 9000, 'Managment');
+INSERT INTO T7_OFFICE VALUES('O10', 'NI_Accounting', 'National Insurance', 'Pankaj', '987654310', 'Delhi', 10000, 'Managment');
+INSERT INTO T7_OFFICE VALUES('O11', 'BA_Marketing', 'Bharti Axa', 'Amar Singh', '987654311', 'Dharwad', 100000, 'Service');
+INSERT INTO T7_OFFICE VALUES('O12', 'BA_Business', 'Bharti Axa', 'Mamta', '987654222', 'Dharwad', 20000, 'Service');
+INSERT INTO T7_OFFICE VALUES('O13', 'BA_Purchase', 'Bharti Axa', 'Priti', '987654223', 'Dharwad', 30000, 'Claim');
+INSERT INTO T7_OFFICE VALUES('O14', 'BA_Business', 'Bharti Axa', 'Shuyam', '987654224', 'Dharwad', 40000, 'Managment');
+
+INSERT INTO T7_MEMBERSHIP VALUES('M1001', 100, 'FULL', 'Mumbai');
+INSERT INTO T7_MEMBERSHIP VALUES('M1002', 180, 'YEARLY', 'Delhi');
+INSERT INTO T7_MEMBERSHIP VALUES('M1003', 180, 'YEARLY', 'Jaipur'); 
+INSERT INTO T7_MEMBERSHIP VALUES('M1004', 340, 'MONTHLY', 'Jodhpur'); 
+INSERT INTO T7_MEMBERSHIP VALUES('M1005', 420, 'YEARLY', 'Udaipur');
+INSERT INTO T7_MEMBERSHIP VALUES('M1006', 500, 'YEARLY', 'Bikaner'); 
+INSERT INTO T7_MEMBERSHIP VALUES('M1007', 660, 'YEARLY', 'Jhalore'); 
+INSERT INTO T7_MEMBERSHIP VALUES('M1008', 660, 'MONTHLY', 'Jhalawar'); 
+INSERT INTO T7_MEMBERSHIP VALUES('M1009', 660, 'YEARLY', 'Pilani'); 
+INSERT INTO T7_MEMBERSHIP VALUES('M1010', 740, 'YEARLY', 'Jjn'); 
+INSERT INTO T7_MEMBERSHIP VALUES('M1011', 820, 'YEARLY', 'Chirawa'); 
+INSERT INTO T7_MEMBERSHIP VALUES('M1012', 900, 'MONTHLY', 'Banglore'); 
+INSERT INTO T7_MEMBERSHIP VALUES('M1013', 980, 'MONTHLY', 'Dharwad'); 
+INSERT INTO T7_MEMBERSHIP VALUES('M1014', 1060, 'YEARLY', 'Huballi');
+
+INSERT INTO T7_VEHICLE_SERVICE VALUES('VS1', 001, 100, 'Air Cleaner', 'Noida', '987654325', 'Rahul', 'MINOR');
+INSERT INTO T7_VEHICLE_SERVICE VALUES('VS2', 002, 180, 'Transmission', 'Bengaluru', '987654321', 'Shintu', 'MAJOR');
+INSERT INTO T7_VEHICLE_SERVICE VALUES('VS3', 003, 260, 'Oil Leakage', 'Delhi', '987654322', 'Manish', 'MINOR');
+INSERT INTO T7_VEHICLE_SERVICE VALUES('VS4', 004, 340, 'Engine', 'Gandhinagar', '987654323', 'Manu', 'MAJOR');
+INSERT INTO T7_VEHICLE_SERVICE VALUES('VS5',005, 420, 'Body Work', 'Patna', '987654324', 'Banti', 'MAJOR');
+INSERT INTO T7_VEHICLE_SERVICE VALUES('VS6',006, 500, 'Dent Removal', 'Noida', '987654325', 'Sanjay', 'MINOR');
+INSERT INTO T7_VEHICLE_SERVICE VALUES('VS7',007, 580, 'Coloring', 'Huballi', '987654326', 'Dinesh', 'MAJOR');
+INSERT INTO T7_VEHICLE_SERVICE VALUES('VS8',008, 660, 'Air Cleaner', 'Ahemdabad', '987654327', 'Ravindra', 'MINOR');
+INSERT INTO T7_VEHICLE_SERVICE VALUES('VS9',009, 740, 'Air Cleaner', 'Delhi', '987654328', 'Saurav', 'MINOR');
+INSERT INTO T7_VEHICLE_SERVICE VALUES('VS10',010, 820, 'Dent', 'Pune', '987654329', 'Ankit', 'MINOR');
+INSERT INTO T7_VEHICLE_SERVICE VALUES('VS11',011, 900, 'Engine', 'Shantinagar', '987654310', 'Kapil', 'MAJOR');
+INSERT INTO T7_VEHICLE_SERVICE VALUES('VS12', 012, 980, 'Brake Reparing', 'Dharwad', '987654311', 'Anil', 'MINOR');
+INSERT INTO T7_VEHICLE_SERVICE VALUES('VS13', 013, 1060, 'Installment', 'Delhi', '987654222', 'Asif', 'MAJOR');
+INSERT INTO T7_VEHICLE_SERVICE VALUES('VS14', 014, 1140, 'Coloring', 'Panji', '987654223', 'Aslam', 'MAJOR');
+
+INSERT INTO T7_COVERAGE VALUES(00301, 'Bajaj Allianz', '2500', 'MAJOR', 'HIGH', 'PD1', '75% Covered by Company', 'ONE YEAR');
+INSERT INTO T7_COVERAGE VALUES(00302, 'United India', '2400', 'MAJOR', 'HIGH', 'PD2', '60% Covered by Company', 'ONE YEAR');
+INSERT INTO T7_COVERAGE VALUES(00303, 'IFFCO Tokio', '1500', 'MAJOR', 'HIGH', 'PD3', '33% Covered by Company', 'ONE YEAR');
+INSERT INTO T7_COVERAGE VALUES(00304, 'National Insurance', '1900', 'MAJOR','HIGH', 'PD4', '59% Covered by Company', 'ONE YEAR');
+INSERT INTO T7_COVERAGE VALUES(00305, 'SBI', '750', 'MAJOR', 'HIGH', 'PD5', '20% Covered by Company', 'ONE YEAR');
+INSERT INTO T7_COVERAGE VALUES(00306, 'Royal Sundaram', '6900', 'MAJOR', 'HIGH', 'PD6', '45% Covered by Company', 'ONE YEAR');
+INSERT INTO T7_COVERAGE VALUES(00307, 'Future Generali', '10500', 'MAJOR', 'HIGH', 'PD7', '50% Covered by Company', 'ONE YEAR');
+INSERT INTO T7_COVERAGE VALUES(00308, 'Shriram','1800', 'MAJOR', 'HIGH', 'PD8', '80% Covered by Company', 'ONE YEAR');
+INSERT INTO T7_COVERAGE VALUES(00309, 'Oriental','4100', 'MAJOR', 'HIGH', 'PD9', '49% Covered by Company', 'ONE YEAR');
+INSERT INTO T7_COVERAGE VALUES(00310, 'Liberty Motor Insurance', '5000', 'MAJOR', 'HIGH', 'PD10', '39% Covered by Company', 'ONE YEAR');
+INSERT INTO T7_COVERAGE VALUES(00311, 'Bharti AXA', '4500', 'MAJOR', 'HIGH', 'PD11', '35% Covered by Company', 'ONE YEAR');
+INSERT INTO T7_COVERAGE VALUES(00312, 'Magma HDI', '5000', 'MAJOR', 'HIGH', 'PD12', '90% Covered by Company', 'ONE YEAR');
+INSERT INTO T7_COVERAGE VALUES(00313, 'Chola MS', '7100', 'MAJOR', 'HIGH', 'PD13', '100% Covered by Company', 'ONE YEAR');
+
+INSERT INTO T7_INSURANCE_POLICY_COVERAGE VALUES('AG1', 00301);
+INSERT INTO T7_INSURANCE_POLICY_COVERAGE VALUES('AG2', 00302);
+INSERT INTO T7_INSURANCE_POLICY_COVERAGE VALUES('AG3', 00303);
+INSERT INTO T7_INSURANCE_POLICY_COVERAGE VALUES('AG4', 00304);
+INSERT INTO T7_INSURANCE_POLICY_COVERAGE VALUES('AG5', 00305);
+INSERT INTO T7_INSURANCE_POLICY_COVERAGE VALUES('AG6', 00306);
+INSERT INTO T7_INSURANCE_POLICY_COVERAGE VALUES('AG7', 00307);
+INSERT INTO T7_INSURANCE_POLICY_COVERAGE VALUES('AG8', 00308);
+INSERT INTO T7_INSURANCE_POLICY_COVERAGE VALUES('AG9', 00309);
+INSERT INTO T7_INSURANCE_POLICY_COVERAGE VALUES('AG10', 00310);
+INSERT INTO T7_INSURANCE_POLICY_COVERAGE VALUES('AG11', 00311);
+INSERT INTO T7_INSURANCE_POLICY_COVERAGE VALUES('AG12', 00312);
+INSERT INTO T7_INSURANCE_POLICY_COVERAGE VALUES('AG13', 00313);
+
+INSERT INTO T7_NOK VALUES('NK1', 'AG1', 'A1', 100, 'Ajay Morendha', ' 801 Sherpur Patna', 8947847366, 'Single', 'M');
+INSERT INTO T7_NOK VALUES('NK2', 'AG2', 'A2', 100, 'Pooja Patel', '705 Gandhinagar', 620100456, 'Married', 'F');
+INSERT INTO T7_NOK VALUES('NK3', 'AG3', 'A3', 180, 'Sharadha Saini', '905 Jaipur', 829652525, 'Married', 'F');
+INSERT INTO T7_NOK VALUES('NK4', 'AG4', 'A4', 340, 'Neha Kumawat', '456 Bhopal', 987456221, 'Single', 'F');
+INSERT INTO T7_NOK VALUES('NK5', 'AG5', 'A5', 420, 'Veeru Prakash', '705 Gandhinagar', 620100456, 'Married', 'M');
+INSERT INTO T7_NOK VALUES('NK6', 'AG6', 'A6', 500, 'Nitin Gautam', '305 Moradabad', 983100456, 'Single', 'M');
+INSERT INTO T7_NOK VALUES('NK7', 'AG7', 'A7', 660, 'Shakshi Shekhar', '402 Rampur', 508900456, 'Married', 'F');
+INSERT INTO T7_NOK VALUES('NK8', 'AG8', 'A8', 660, 'Rohan Reddy', '567 Amroha', 850370456, 'Single', 'M');
+INSERT INTO T7_NOK VALUES('NK9', 'AG9', 'A9', 660, 'Rohan Smith', '409 Aligarh', 942016576, 'Single', 'M');
+INSERT INTO T7_NOK VALUES('NK10', 'AG10', 'A10', 740, 'Riya Shah', '209 Delhi', 620100908, 'Single', 'F');
+INSERT INTO T7_NOK VALUES('NK11', 'AG11', 'A11', 820, 'Diksha Patel', '101 Kashipur', 920100456, 'Single', 'F');
+INSERT INTO T7_NOK VALUES('NK12', 'AG12', 'A12', 900, 'Anushka Sharma', '305 Haldwani', 888100456, 'Single', 'F');
+INSERT INTO T7_NOK VALUES('NK13', 'AG13', 'A13', 980, 'Aryan Patel', '499 Lucknow', 777700456, 'Married', 'M');
+
+INSERT INTO T7_POLICY_RENEWABLE VALUES('PR1001','2022-04-11','First party','AG1','A1',100);
+INSERT INTO T7_POLICY_RENEWABLE VALUES('PR1002','2021-12-19','Third party','AG2','A2',180);
+INSERT INTO T7_POLICY_RENEWABLE VALUES('PR1003','2021-02-06','Second party','AG3','A3',260);
+INSERT INTO T7_POLICY_RENEWABLE VALUES('PR1004','2020-09-13','Third party','AG4','A4',340);
+INSERT INTO T7_POLICY_RENEWABLE VALUES('PR1005','2022-09-02','First party','AG5','A5',420);
+INSERT INTO T7_POLICY_RENEWABLE VALUES('PR1006','2020-05-19','Second party','AG6','A6',500);
+INSERT INTO T7_POLICY_RENEWABLE VALUES('PR1007','2021-09-21','Third party','AG7','A7',580);
+INSERT INTO T7_POLICY_RENEWABLE VALUES('PR1008','2023-08-29','First party','AG8','A8',660);
+INSERT INTO T7_POLICY_RENEWABLE VALUES('PR1009','2023-11-01','Second party','AG9','A9',740);
+INSERT INTO T7_POLICY_RENEWABLE VALUES('PR1010','2022-02-11','Third party','AG10','A10',820);
+INSERT INTO T7_POLICY_RENEWABLE VALUES('PR1011','2022-01-29','Second party','AG11','A11',900);
+INSERT INTO T7_POLICY_RENEWABLE VALUES('PR1012','2022-01-14','First party','AG12','A12',980);
+INSERT INTO T7_POLICY_RENEWABLE VALUES('PR1013','2019-02-25','Second party','AG13','A13',1060);
+
+INSERT INTO T7_INCIDENT VALUES('I101',001 ,'Accident', '2021-05-01', 'BODY DAMAGE');
+INSERT INTO T7_INCIDENT VALUES('I102',002 ,'Loss', '2020-05-05', 'ENGINE FREEZE');
+INSERT INTO T7_INCIDENT VALUES('I103', 003 ,'Accident', '2021-04-05', 'HEADLIGHT DAMAGE');
+INSERT INTO T7_INCIDENT VALUES('I104',004 , 'Loss', '2019-03-12', 'DENT');
+INSERT INTO T7_INCIDENT VALUES('I105',005 , 'Theft', '2019-11-12', 'BRAKE PIPELINE FAILED');
+INSERT INTO T7_INCIDENT VALUES('I106',006 , 'Accident', '2020-12-04', 'FRONT PART FULLY DAMAGE');
+INSERT INTO T7_INCIDENT VALUES('I107', 007 ,'Fire', '2021-02-01', 'SIDE MIRROR DAMAGE');
+INSERT INTO T7_INCIDENT VALUES('I108', 008 ,'Accident', '2020-08-02', 'ENGINE DAMAGE');
+INSERT INTO T7_INCIDENT VALUES('I109', 009 ,'Accident', '2022-01-12', 'DENT');
+INSERT INTO T7_INCIDENT VALUES('I110', 010 ,'Loss', '2021-03-25', 'NEW TYRES');
+INSERT INTO T7_INCIDENT VALUES('I111', 011 ,'Loss', '2021-08-20', 'HEADLIGHT DAMAGE');
+INSERT INTO T7_INCIDENT VALUES('I112', 012 ,'Fire', '2021-06-20', 'DENT');
+INSERT INTO T7_INCIDENT VALUES('I113', 013 ,'Accident', '2021-08-04', 'ENGINE WORK');
+INSERT INTO T7_INCIDENT VALUES('I114', 014 ,'Theft', '2021-05-08', 'FULL BODY CHANGE');
+
+INSERT INTO T7_INCIDENT_REPORT VALUES('IR101', 'I101', 100, 'Ram', '10000', 'accident', 'Full Body Damage');
+INSERT INTO T7_INCIDENT_REPORT VALUES('IR102', 'I102', 180, 'Vivek', '15000', 'Loss', 'Front Part Fully Damage');
+INSERT INTO T7_INCIDENT_REPORT VALUES('IR103', 'I103', 180, 'Vinit', '1000', 'accident', 'Dent');
+INSERT INTO T7_INCIDENT_REPORT VALUES('IR104', 'I104', 340, 'Vicky', '2000', 'Loss', 'Headlight Damage');
+INSERT INTO T7_INCIDENT_REPORT VALUES('IR105', 'I105', 420, 'Aman', '30000', 'Theft','Engine Work Fail');
+INSERT INTO T7_INCIDENT_REPORT VALUES('IR106', 'I106', 500, 'Vipul', '10000', 'accident', 'Engine Freeze');
+INSERT INTO T7_INCIDENT_REPORT VALUES('IR107', 'I107', 660, 'Rohit', '1100', 'Fire', 'Tyres Burst');
+INSERT INTO T7_INCIDENT_REPORT VALUES('IR108', 'I108', 660, 'Kesav', '10000', 'accident', 'Front Part Fully Damage');
+INSERT INTO T7_INCIDENT_REPORT VALUES('IR109', 'I109', 660, 'Daksh', '550', 'accident', 'Tyres Burst');
+INSERT INTO T7_INCIDENT_REPORT VALUES('IR110', 'I110', 740, 'Mohit', '1110', 'Loss', 'Dent');
+INSERT INTO T7_INCIDENT_REPORT VALUES('IR111', 'I111', 820, 'Ashish', '1210', 'Loss', 'Fuel Pipe Burst');
+INSERT INTO T7_INCIDENT_REPORT VALUES('IR112', 'I112', 900, 'Ravi', '1300', 'Fire', 'Headlight Demage');
+INSERT INTO T7_INCIDENT_REPORT VALUES('IR113', 'I113', 980, 'Sachin', '12000', 'accident', 'Entire Backend Part Damage');
+INSERT INTO T7_INCIDENT_REPORT VALUES('IR114', 'I114', 1060, 'Rahul', '13000', 'Theft', 'Engine Work Fail');
+
+INSERT INTO T7_PRODUCT VALUES('PD1', 'Bajaj Allianz', 10000, 'Bajaj Allianz Car Economical Insurance');
+INSERT INTO T7_PRODUCT VALUES('PD2', 'Bajaj Allianz', 11000, 'Bajaj Allianz Car Insurance');
+INSERT INTO T7_PRODUCT VALUES('PD3', 'Bajaj Allianz', 13000, 'Bajaj Allianz Car Premium Insurance');
+INSERT INTO T7_PRODUCT VALUES('PD4', 'Bajaj Allianz', 14050, 'Bajaj Allianz Car Super Premium Insurance');
+INSERT INTO T7_PRODUCT VALUES('PD5', 'Bajaj Allianz', 17000, 'Bajaj Allianz Car Super Premium+ Insurance');
+INSERT INTO T7_PRODUCT VALUES('PD6', 'United India', 12000, 'United India Car Insurance');
+INSERT INTO T7_PRODUCT VALUES('PD7', 'United India', 15000, 'United India Car Premium Insurance');
+INSERT INTO T7_PRODUCT VALUES('PD8', 'National Insurance', 11500, 'National Insurance Insurance');
+INSERT INTO T7_PRODUCT VALUES('PD9', 'National Insurance', 16000, 'National Insurance Premium Insurance');
+INSERT INTO T7_PRODUCT VALUES('PD10', 'National Insurance', 19000, 'National Insurance Premium+ Insurance');
+INSERT INTO T7_PRODUCT VALUES('PD11', 'Bharti AXA', 9500, 'Bharti AXA Car Economical Insurance');
+INSERT INTO T7_PRODUCT VALUES('PD12', 'Bharti AXA', 12000, 'Bharti AXA Car Insurance');
+INSERT INTO T7_PRODUCT VALUES('PD13', 'Bharti AXA', 15000, 'Bharti AXA Car Premium Insurance');
+INSERT INTO T7_PRODUCT VALUES('PD14', 'Bharti AXA', 19400, 'Bharti AXA Car Premium+ Insurance');
+
+INSERT INTO T7_RECEIPT VALUES('R001', 'P1001', 100, 7560, '2020-03-11');
+INSERT INTO T7_RECEIPT VALUES('R002', 'P1002', 100, 8208, '2020-12-19');
+INSERT INTO T7_RECEIPT VALUES('R003', 'P1003', 180, 8964, '2019-01-08');
+INSERT INTO T7_RECEIPT VALUES('R004', 'P1004', 340, 8640, '2018-07-13');
+INSERT INTO T7_RECEIPT VALUES('R005', 'P1005', 420, 9720, '2019-09-05');
+INSERT INTO T7_RECEIPT VALUES('R006', 'P1006', 500, 8100, '2019-02-21');
+INSERT INTO T7_RECEIPT VALUES('R007', 'P1007', 660, 6480, '2020-03-11');
+INSERT INTO T7_RECEIPT VALUES('R008', 'P1008', 660, 8424, '2017-02-21');
+INSERT INTO T7_RECEIPT VALUES('R009', 'P1009', 660, 10368, '2022-11-01');
+INSERT INTO T7_RECEIPT VALUES('R0010', 'P1010', 740, 8640, '2022-01-16');
+INSERT INTO T7_RECEIPT VALUES('R0011', 'P1011', 820, 8964, '2021-12-31');
+INSERT INTO T7_RECEIPT VALUES('R0012', 'P1012', 900, 10368, '2020-01-14');
+INSERT INTO T7_RECEIPT VALUES('R0013', 'P1013', 980, 7614, '2018-02-25');
+INSERT INTO T7_RECEIPT VALUES('R0014', 'P1014', 1060, 10800, '2017-03-04');
